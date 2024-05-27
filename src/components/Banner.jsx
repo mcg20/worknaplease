@@ -100,7 +100,7 @@ const Banner = () => {
         {/* texts */}
         <div className="md:w-1/2 px-4 space-y-7">
         <h2 className="md:text-5xl text-4xl font-bold md:leading-snug leading-snug">
-            Dive into Delights Of Delectable <span className="text-green">Food</span>
+        Dive into Delights Of Delectable Food <span className="text-green">Food</span>
           </h2>
           <p className="text-[#4A4A4A] text-xl">
             Where Each Plate Weaves a Story of Culinary Mastery and Passionate

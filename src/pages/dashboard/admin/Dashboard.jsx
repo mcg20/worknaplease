@@ -14,10 +14,8 @@ import {
   Pie,
   Legend,
   ResponsiveContainer,
-  ComposedChart,
   Tooltip,
   Area,
-  Line,
   AreaChart,
 } from "recharts";
 
@@ -28,42 +26,35 @@ const Dashboard = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
-  const { data: stats = {} } = useQuery({
+  // Fetch admin stats
+  const { data: stats = {}, isLoading: isLoadingStats, error: errorStats } = useQuery({
     queryKey: ["admin-stats"],
     queryFn: async () => {
       const res = await axiosSecure.get("/admin-stats");
+      console.log("Admin Stats:", res.data); // Debugging
       return res.data;
     },
   });
 
-  console.log(stats);
-  const { data: chartData = [] } = useQuery({
+  // Fetch order stats
+  const { data: chartData = [], isLoading: isLoadingChart, error: errorChart } = useQuery({
     queryKey: ["order-stats"],
     queryFn: async () => {
       const res = await axiosSecure.get("/order-stats");
+      console.log("Order Stats:", res.data); // Debugging
       return res.data;
     },
   });
 
-  // custom shape for the bar chart
-  const getPath = (x, y, width, height) => {
-    return `M${x},${y + height}C${x + width / 3},${y + height} ${
-      x + width / 2
-    },${y + height / 3}
-    ${x + width / 2}, ${y}
-    C${x + width / 2},${y + height / 3} ${x + (2 * width) / 3},${y + height} ${
-      x + width
-    }, ${y + height}
-    Z`;
-  };
+  if (isLoadingStats || isLoadingChart) {
+    return <div>Loading...</div>;
+  }
 
-  const TriangleBar = (props) => {
-    const { fill, x, y, width, height } = props;
+  if (errorStats || errorChart) {
+    return <div>Error loading data</div>;
+  }
 
-    return <path d={getPath(x, y, width, height)} stroke="none" fill={fill} />;
-  };
-
-  // custom shape for the pie chart
+  // Custom shape for the pie chart
   const RADIAN = Math.PI / 180;
   const renderCustomizedLabel = ({
     cx,
@@ -96,9 +87,7 @@ const Dashboard = () => {
 
   return (
     <div className="w-full md:w-[870px] mx-auto px-4 ">
-      <h2 className="text-2xl font-semibold my-4">
-        Hi, {user.displayName}
-      </h2>
+      <h2 className="text-2xl font-semibold my-4">Hi, {user.displayName}</h2>
       {/* stats */}
       <div className="stats shadow flex flex-col md:flex-row">
         <div className="stat bg-emerald-200">
@@ -152,7 +141,7 @@ const Dashboard = () => {
 
       {/* bar & pie chart */}
       <div className="mt-16 flex flex-col sm:flex-row">
-        {/* bar chart */}
+        {/* area chart */}
         <div className="sm:w-1/2 w-full">
           <div style={{ width: "100%", height: 300 }}>
             <ResponsiveContainer>
@@ -182,27 +171,27 @@ const Dashboard = () => {
 
         {/* pie chart */}
         <div className="sm:w-1/2 w-full">
-        <div style={{ width: '100%', height: 300 }}>
-        <ResponsiveContainer width="100%" height="100%">
-        <PieChart width={400} height={400}>
-          <Pie
-            data={pieChartData}
-            cx="50%"
-            cy="50%"
-            labelLine={false}
-            label={renderCustomizedLabel}
-            outerRadius={80}
-            fill="#8884d8"
-            dataKey="value"
-          >
-            {pieChartData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-            ))}
-          </Pie>
-          <Legend/>
-        </PieChart>
-      </ResponsiveContainer>
-      </div>
+          <div style={{ width: '100%', height: 300 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart width={400} height={400}>
+                <Pie
+                  data={pieChartData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={renderCustomizedLabel}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {pieChartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Legend />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
     </div>
