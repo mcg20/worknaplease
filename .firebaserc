@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "default": "food-client-deploy-c16d9",
+    "mcg": "food-client-deploy-c16d9"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
+}
