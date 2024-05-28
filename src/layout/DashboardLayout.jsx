@@ -1,5 +1,5 @@
 
-import logo from "/logo.png";
+import logo from "/logo1.png";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import { MdDashboard, MdOutlineDashboardCustomize } from "react-icons/md";
 import {
